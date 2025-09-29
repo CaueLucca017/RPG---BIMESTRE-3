@@ -3,237 +3,718 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arena dos Campeões</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>A Arena de Vorgran</title>
   <style>
-    * { transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease; }
-    section { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-    section.visible { opacity: 1; transform: translateY(0); }
-
-    /* Tema Neon */
-    .neon {
-      background: linear-gradient(to right, #1a0033, #000000) !important;
-      color: #ff69b4 !important;
-    }
-    .neon h1, .neon h2, .neon h3, .neon h4, .neon h5, .neon h6 { color: #ff69b4 !important; }
-    .neon em, .neon p { color: #ffffff !important; }
-    .neon nav a { color: #ff69b4 !important; }
-    .neon button {
-      background: #ff4081 !important; color: #fff !important; border: none;
-      border-radius: 6px; padding: 8px 16px; cursor: pointer;
-    }
-    .neon button:hover { background: #ff5c93 !important; }
-    .neon .match, .neon .player {
-      background: #2a002a !important; border: 1px solid #ff69b4 !important;
-      color: #ff69b4 !important;
+    :root {
+      --main-bg: #2e4f2e;
+      --gradient-bg: linear-gradient(135deg, #2e4f2e, #4a7043);
+      --border-color: #8b5a2b;
+      --shadow-color: #5c4033;
+      --text-color: #f5f5f5;
+      --accent-color: #ffcc00;
+      --secondary-bg: rgba(46, 79, 46, 0.8);
     }
 
-    /* Tema Azul Futurista */
-    .futurista {
-      background: linear-gradient(to right, #001f3f, #000000) !important;
-      color: #00c8ff !important;
-    }
-    .futurista h1, .futurista h2, .futurista h3, .futurista h4, .futurista h5, .futurista h6 { color: #00c8ff !important; }
-    .futurista em, .futurista p { color: #e6f7ff !important; }
-    .futurista nav a { color: #00c8ff !important; }
-    .futurista button {
-      background: #007bff !important; color: #fff !important; border: none;
-      border-radius: 6px; padding: 8px 16px; cursor: pointer;
-    }
-    .futurista button:hover { background: #339cff !important; }
-    .futurista #chaveamento div:not([class*="yellow"]) {
-      background: #001a33 !important; color: #00c8ff !important;
-    }
-    .futurista #chaveamento .space-y-4 > div,
-    .futurista #chaveamento .space-y-[4.5rem] > div,
-    .futurista #chaveamento .space-y-[9.5rem] > div,
-    .futurista #chaveamento .space-y-[19rem] > div {
-      background-color: #262626 !important; border: 1px solid #00c8ff !important;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Tema Medieval */
-    [data-theme="medieval"] {
-      --bg: #0c0a09;
-      --bg-soft: #141210;
-      --card: #1c1917;
-      --text: #fde68a;
-      --muted: #fcd34d;
-      --accent: #b45309;
-      --accent-2: #84cc16;
+    body {
+      background: var(--gradient-bg);
+      color: var(--text-color);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .medieval { background: var(--bg) !important; color: var(--text) !important; }
-    .medieval header { background: var(--bg-soft) !important; }
-    .medieval nav { background: var(--card) !important; }
-    .medieval .card { background: var(--card) !important; }
-    .medieval h1, .medieval h2, .medieval h3, .medieval h4, .medieval h5, .medieval h6 {
-      color: var(--text) !important;
+
+    .hidden {
+      display: none;
     }
-    .medieval .muted-text { color: var(--muted) !important; }
-    .medieval a { color: var(--muted) !important; }
-    .medieval a:hover { color: var(--text) !important; }
-    .medieval .accent-text { color: var(--accent) !important; }
-    .medieval .accent-bg { background: var(--accent) !important; }
-    .medieval .accent-2-bg { background: var(--accent-2) !important; }
-    .medieval button { background: var(--accent) !important; color: var(--bg) !important; }
-    .medieval button:hover { background: #d66411 !important; }
-    .medieval .border-accent { border: 1px solid var(--accent) !important; }
-    .medieval .border-muted { border: 1px solid var(--muted) !important; }
+
+    /* Menu de navegação e cores */
+    .nav-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+    
+    .nav-menu, .color-menu {
+      position: relative;
+    }
+    
+    .nav-button, .color-button {
+      background-color: var(--main-bg);
+      color: var(--accent-color);
+      border: 4px solid var(--border-color);
+      padding: 12px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 6px 0 var(--shadow-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+    }
+    
+    .nav-button:hover, .color-button:hover {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 var(--shadow-color);
+      background-color: var(--shadow-color);
+    }
+    
+    .nav-button:active, .color-button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+    
+    .nav-dropdown, .color-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--secondary-bg);
+      border: 4px solid var(--border-color);
+      box-shadow: 0 6px 0 var(--shadow-color);
+      min-width: 200px;
+    }
+    
+    .nav-dropdown a, .color-dropdown button {
+      display: block;
+      color: var(--text-color);
+      padding: 10px 15px;
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      text-transform: uppercase;
+      transition: background-color 0.2s;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+    
+    .nav-dropdown a:hover, .color-dropdown button:hover {
+      background-color: var(--shadow-color);
+    }
+    
+    .nav-menu:hover .nav-dropdown, .color-menu:hover .color-dropdown {
+      display: block;
+    }
+
+    .expand-button {
+      background-color: var(--main-bg);
+      color: var(--accent-color);
+      border: 4px solid var(--border-color);
+      padding: 8px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 6px 0 var(--shadow-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 10px 0;
+      display: block;
+    }
+
+    .expand-button:hover {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 var(--shadow-color);
+      background-color: var(--shadow-color);
+    }
+
+    .expand-button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+
+    /* Cabeçalho */
+    .header {
+      background: var(--secondary-bg);
+      border-bottom: 4px solid var(--border-color);
+      box-shadow: 0 6px 0 var(--shadow-color);
+      padding: 20px 0;
+      position: relative;
+      z-index: 999;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-text h1 {
+      color: var(--accent-color);
+      font-family: 'Georgia', serif;
+      font-size: 2.5rem;
+      text-shadow: 3px 3px 0 var(--shadow-color);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .logo-text .subtitle {
+      color: var(--text-color);
+      font-size: 1.2rem;
+      text-shadow: 2px 2px 0 var(--shadow-color);
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      flex: 1;
+    }
+
+    .section-title {
+      color: var(--accent-color);
+      font-family: 'Georgia', serif;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 0 var(--shadow-color);
+      margin: 30px 0 20px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+    }
+
+    .about-section {
+      background: var(--secondary-bg);
+      border: 4px solid var(--border-color);
+      box-shadow: 0 8px 0 var(--shadow-color);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      color: var(--text-color);
+      margin-bottom: 15px;
+      line-height: 1.7;
+    }
+
+    .fights-section {
+      background: var(--secondary-bg);
+      border: 4px solid var(--border-color);
+      box-shadow: 0 8px 0 var(--shadow-color);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .group-table, .bracket-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .group-table th,
+    .group-table td,
+    .bracket-table th,
+    .bracket-table td {
+      padding: 10px;
+      border: 2px solid var(--border-color);
+      text-align: center;
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    .group-table th,
+    .bracket-table th {
+      background: var(--main-bg);
+      color: var(--accent-color);
+      text-transform: uppercase;
+      text-shadow: 1px 1px 0 var(--shadow-color);
+      font-size: 1.2rem;
+    }
+
+    .group-table tr:nth-child(even),
+    .bracket-table tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .group-table tr:hover,
+    .bracket-table tr:hover {
+      background: var(--main-bg);
+    }
+
+    .bracket {
+      display: flex;
+      align-items: stretch;
+      overflow-x: auto;
+      padding: 10px;
+      position: relative;
+    }
+    
+    .round {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 0 20px;
+      position: relative;
+    }
+    
+    .match {
+      background: var(--secondary-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px 0;
+      text-align: center;
+      min-width: 80px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .player {
+      background: var(--main-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      padding: 5px;
+      margin: 3px 0;
+      color: var(--text-color);
+    }
+
+    .section {
+      background: var(--secondary-bg);
+      border: 4px solid var(--border-color);
+      box-shadow: 0 8px 0 var(--shadow-color);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      color: var(--accent-color);
+      font-size: 2rem;
+      text-shadow: 2px 2px 0 var(--shadow-color);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .arrow {
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--accent-color);
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: #000;
+      padding: 15px 20px;
+      border: 3px solid var(--border-color);
+      box-shadow: 0 4px 0 var(--shadow-color);
+      z-index: 1001;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: #2ed573;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .logo-text h1 {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .nav-container {
+        top: 10px;
+        right: 10px;
+      }
+
+      .nav-button, .color-button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+
+      .bracket {
+        overflow-x: scroll;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-text h1 {
+        font-size: 1.6rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
   </style>
 </head>
-
-<body class="font-sans min-h-screen flex flex-col medieval" data-theme="medieval">
-  <header class="shadow-2xl">
-    <div class="max-w-6xl mx-auto flex items-center justify-between p-6 relative">
-      <div class="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg bg-[var(--card)]">
-        <span class="text-xs font-bold text-[var(--text)]">Logo</span>
+<body>
+  <!-- Menu de navegação e cores -->
+  <div class="nav-container">
+    <div class="nav-menu">
+      <button class="nav-button">Navegar</button>
+      <div class="nav-dropdown">
+        <a href="homepage.html">Página Inicial</a>
+        <a href="tabelas.html">Tabelas</a>
+        <a href="forja.html">Forja de Adornos</a>
+        <a href="Vorgram_itens.html">Itens</a>
       </div>
-      <div class="text-center flex-1">
-        <h1 class="text-4xl font-extrabold tracking-wide drop-shadow-lg">Arena dos Campeões</h1>
-        <p class="italic muted-text">Onde heróis e lendas se encontram</p>
+    </div>
+    <div class="color-menu">
+      <button class="color-button">Cores</button>
+      <div class="color-dropdown">
+        <button onclick="changeTheme('forest')">Floresta</button>
+        <button onclick="changeTheme('autumn')">Outono</button>
+        <button onclick="changeTheme('twilight')">Crepúsculo</button>
+        <button onclick="changeTheme('night')">Noite</button>
+        <button onclick="changeTheme('beige')">Bege</button>
+        <button onclick="changeTheme('oak')">Carvalho</button>
+        <button onclick="changeTheme('sand')">Areia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cabeçalho -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo-text">
+          <h1>A Arena de Vorgran</h1>
+          <div class="subtitle">Vale do Espantalho</div>
+        </div>
       </div>
     </div>
   </header>
 
-  <nav class="backdrop-blur-md p-4 sticky top-0 z-10 shadow-lg">
-    <ul class="flex space-x-6 justify-center font-semibold">
-      <li><a href="#chaveamento">Chaveamento</a></li>
-      <li><a href="#visitantes">Mural</a></li>
-      <li><a href="#historia">História</a></li>
-      <li><a href="#inscricao">Inscrição</a></li>
-    </ul>
-  </nav>
+  <!-- Conteúdo Principal -->
+  <div class="container">
+    <!-- Seção Sobre -->
+    <section id="sobre" class="about-section">
+      <h2 class="section-title">Sobre o Vale do Espantalho</h2>
+      <p>
+        No coração de um vale sombrio, cercado por florestas densas e nevoeiros eternos, ergue-se o Vale do Espantalho, uma cidade onde bravos guerreiros e místicos se reúnem para provar seu valor. A Arena de Vorgran, o orgulho da cidade, é o palco de batalhas épicas contra inimigos de terras distantes e duelos ferozes entre os próprios moradores. Forjada em pedra e sangue, a arena é um símbolo de coragem e glória.
+      </p>
+      <p>
+        O Vale do Espantalho é conhecido por suas tradições antigas, com espantalhos encantados que guardam os campos e sussurram segredos aos ventos. Aqui, a vida é moldada pela força, honra e pela busca incessante por vitória. Seja bem-vindo à nossa terra, onde cada batalha conta uma história.
+      </p>
+    </section>
 
-  <main class="flex-grow">
-    <div class="text-center mt-6">
-      <button id="toggle-chaveamento" class="accent-bg hover:bg-[#d66411] text-[var(--bg)] font-bold py-2 px-6 rounded-lg shadow-md">
-        Mostrar Chaveamento
-      </button>
-    </div>
+    <!-- Seção de Lutas -->
+    <section id="lutas" class="fights-section">
+      <h2 class="section-title">Chaveamento das Lutas</h2>
 
-    <!-- Chaveamento -->
-    <section id="chaveamento" class="max-w-6xl mx-auto mt-10 hidden">
-      <h2 class="text-2xl font-bold mb-6 text-center">Chaveamento do Torneio</h2>
-      <div class="grid grid-cols-4 gap-8">
-        <div class="space-y-4">
-          <div class="p-4 rounded-lg border-accent">Player 1</div>
-          <div class="p-4 rounded-lg border-accent">Player 2</div>
-          <div class="p-4 rounded-lg border-accent">Player 3</div>
-          <div class="p-4 rounded-lg border-accent">Player 4</div>
-        </div>
-        <div class="space-y-[4.5rem]">
-          <div class="p-4 rounded-lg border-accent">Vencedor 1</div>
-          <div class="p-4 rounded-lg border-accent">Vencedor 2</div>
-        </div>
-        <div class="space-y-[9.5rem]">
-          <div class="p-4 rounded-lg border-accent">Finalista</div>
-        </div>
-        <div class="space-y-[19rem]">
-          <div class="p-4 rounded-lg border-accent">Campeão</div>
+      <!-- Fase de Grupos -->
+      <button class="expand-button" onclick="toggleSection('group-container', this)">Mostrar Fase de Grupos</button>
+      <div id="group-container" class="hidden">
+        <h3 class="section-title" style="font-size: 1.8rem;">Fase de Grupos</h3>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Brócolis</th></tr>
+            <tr><td>André</td></tr>
+            <tr><td>Bruno</td></tr>
+            <tr><td>Caue</td></tr>
+            <tr><td>Lucas M.</td></tr>
+          </table>
+          
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Jilós</th></tr>
+            <tr><td>Eryck S.</td></tr>
+            <tr><td>Giullia J.</td></tr>
+            <tr><td>Maria L.</td></tr>
+            <tr><td>Matheus A.</td></tr>
+          </table>
+          
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Rabanete</th></tr>
+            <tr><td>Fernanda</td></tr>
+            <tr><td>Guilherme L.</td></tr>
+            <tr><td>Lucas S.</td></tr>
+            <tr><td>Nicole F.</td></tr>
+          </table>
+          
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Espinafre</th></tr>
+            <tr><td>Arthur S.</td></tr>
+            <tr><td>Enzo M.</td></tr>
+            <tr><td>Maria Q.</td></tr>
+            <tr><td>Gustavo P.</td></tr>
+          </table>
+          
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Batata</th></tr>
+            <tr><td>Fábio F.</td></tr>
+            <tr><td>Guilherme P.</td></tr>
+            <tr><td>João M.</td></tr>
+            <tr><td>Richard O.</td></tr>
+          </table>
+          
+          <table class="group-table">
+            <tr><th colspan="2">Grupo Wasabi</th></tr>
+            <tr><td>Angelina B.</td></tr>
+            <tr><td>Caua</td></tr>
+            <tr><td>Gabriel A.</td></tr>
+            <tr><td>Raika O.</td></tr>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- Mural de Visitantes -->
-    <section id="visitantes" class="max-w-4xl mx-auto mt-10">
-      <h2 class="text-2xl font-bold mb-6 text-center">Mural de Visitantes</h2>
-      <form id="mural-form" class="flex flex-col gap-4">
-        <input type="text" id="nome-visitante" placeholder="Seu nome" class="p-2 rounded-lg border-muted" required>
-        <textarea id="mensagem-visitante" placeholder="Deixe sua mensagem..." class="p-2 rounded-lg border-muted" required></textarea>
-        <button type="submit" class="accent-bg py-2 px-6 rounded-lg font-bold">Publicar</button>
-      </form>
-      <div id="mural-mensagens" class="mt-6 space-y-4"></div>
-    </section>
+    <!-- CHAVEAMENTO DOS VENCEDORES -->
+    <div class="section">
+      <h2>Chaveamento dos Vencedores</h2>
+      <div class="bracket">
+        <!-- Rodada 1 -->
+        <div class="round">
+          <div class="match"><div class="player">1</div><div class="player">2</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">3</div><div class="player">4</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">5</div><div class="player">6</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">7</div><div class="player">8</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">9</div><div class="player">10</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">11</div><div class="player">12</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">13</div><div class="player">14</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">15</div><div class="player">16</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">17</div><div class="player">18</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">19</div><div class="player">20</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">21</div><div class="player">22</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">23</div><div class="player">24</div><span class="arrow">→</span></div>
+        </div>
 
-    <!-- História -->
-    <section id="historia" class="max-w-4xl mx-auto mt-10 text-center">
-      <h2 class="text-2xl font-bold mb-6">A História da Arena</h2>
-      <p class="leading-relaxed">
-        Desde eras antigas, guerreiros lendários se reúnem na Arena dos Campeões para decidir quem merece o título de maior herói de todos os tempos.
-      </p>
-    </section>
+        <!-- Rodada 2 -->
+        <div class="round">
+          <div class="match"><div class="player">1</div><div class="player">4</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">5</div><div class="player">8</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">10</div><div class="player">11</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">14</div><div class="player">15</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">17</div><div class="player">19</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">22</div><div class="player">24</div><span class="arrow">→</span></div>
+        </div>
 
-    <!-- Inscrição -->
-    <section id="inscricao" class="max-w-4xl mx-auto mt-10">
-      <h2 class="text-2xl font-bold mb-6 text-center">Inscreva-se no Torneio</h2>
-      <form id="inscricao-form" class="flex flex-col gap-4">
-        <input type="text" id="nome-jogador" placeholder="Nome do jogador" class="p-2 rounded-lg border-muted" required>
-        <input type="text" id="classe-jogador" placeholder="Classe (ex: Guerreiro, Mago...)" class="p-2 rounded-lg border-muted" required>
-        <button type="submit" class="accent-bg py-2 px-6 rounded-lg font-bold">Inscrever</button>
-      </form>
-      <div id="lista-inscritos" class="mt-6 space-y-2"></div>
-    </section>
-  </main>
+        <!-- Rodada 3: Quartas -->
+        <div class="round">
+          <div class="match"><div class="player">1</div><div class="player">5</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">10</div><div class="player">15</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">17</div><div class="player">24</div><span class="arrow">→</span></div>
+        </div>
 
-  <footer class="text-center py-6 mt-12 shadow-inner bg-[var(--card)]">
-    <p class="muted-text">Arena dos Campeões © 2025 - Todos os direitos reservados</p>
-  </footer>
+        <!-- Rodada 4: Semifinais -->
+        <div class="round">
+          <div class="match"><div class="player">7</div><div class="player">5</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">15</div><div class="player">24</div><span class="arrow">→</span></div>
+        </div>
+
+        <!-- Final -->
+        <div class="round">
+          <div class="match"><div class="player">5 (Campeão)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAVEAMENTO DOS PERDEDORES -->
+    <div class="section">
+      <h2>Chaveamento dos Perdedores</h2>
+      <div class="bracket">
+        <div class="round">
+          <div class="match"><div class="player">2</div><div class="player">3</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">6</div><div class="player">7</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">9</div><div class="player">12</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">13</div><div class="player">16</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">18</div><div class="player">20</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">21</div><div class="player">23</div><span class="arrow">→</span></div>
+        </div>
+
+        <div class="round">
+          <div class="match"><div class="player">3</div><div class="player">6</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">9</div><div class="player">16</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">18</div><div class="player">23</div><span class="arrow">→</span></div>
+        </div>
+
+        <div class="round">
+          <div class="match"><div class="player">3</div><div class="player">9</div><span class="arrow">→</span></div>
+          <div class="match"><div class="player">16</div><div class="player">23</div><span class="arrow">→</span></div>
+        </div>
+
+        <div class="round">
+          <div class="match"><div class="player">3</div><div class="player">23</div><span class="arrow">→</span></div>
+        </div>
+
+        <div class="round">
+          <div class="match"><div class="player">23 (Vencedor)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    function salvarLocalStorage(chave, dados) {
-      localStorage.setItem(chave, JSON.stringify(dados));
+    // ===== SISTEMA DE NOTIFICAÇÕES =====
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => notification.classList.add('show'), 100);
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
     }
-    function carregarLocalStorage(chave) {
-      return JSON.parse(localStorage.getItem(chave)) || [];
+
+    // ===== SISTEMA DE TEMAS =====
+    const themes = {
+      forest: {
+        '--main-bg': '#2e4f2e',
+        '--gradient-bg': 'linear-gradient(135deg, #2e4f2e, #4a7043)',
+        '--border-color': '#8b5a2b',
+        '--shadow-color': '#5c4033',
+        '--text-color': '#f5f5f5',
+        '--accent-color': '#ffcc00',
+        '--secondary-bg': 'rgba(46, 79, 46, 0.8)'
+      },
+      autumn: {
+        '--main-bg': '#8b4513',
+        '--gradient-bg': 'linear-gradient(135deg, #8b4513, #a0522d)',
+        '--border-color': '#654321',
+        '--shadow-color': '#3e2723',
+        '--text-color': '#fff8dc',
+        '--accent-color': '#ffa500',
+        '--secondary-bg': 'rgba(139, 69, 19, 0.8)'
+      },
+      twilight: {
+        '--main-bg': '#4b3c5e',
+        '--gradient-bg': 'linear-gradient(135deg, #4b3c5e, #6a5b7b)',
+        '--border-color': '#6b8299',
+        '--shadow-color': '#4a5c72',
+        '--text-color': '#f5f5f5',
+        '--accent-color': '#ffcc00',
+        '--secondary-bg': 'rgba(75, 60, 94, 0.8)'
+      },
+      night: {
+        '--main-bg': '#2e2e4f',
+        '--gradient-bg': 'linear-gradient(135deg, #2e2e4f, #434370)',
+        '--border-color': '#4a4a72',
+        '--shadow-color': '#1a1a33',
+        '--text-color': '#e6e6fa',
+        '--accent-color': '#9370db',
+        '--secondary-bg': 'rgba(46, 46, 79, 0.8)'
+      },
+      beige: {
+        '--main-bg': '#f5f5dc',
+        '--gradient-bg': 'linear-gradient(135deg, #f5f5dc, #e8d5b9)',
+        '--border-color': '#4a3728',
+        '--shadow-color': '#3c2f24',
+        '--text-color': '#333333',
+        '--accent-color': '#d4a017',
+        '--secondary-bg': 'rgba(245, 245, 220, 0.8)'
+      },
+      oak: {
+        '--main-bg': '#3c2415',
+        '--gradient-bg': 'linear-gradient(135deg, #3c2415, #4a2e1a)',
+        '--border-color': '#8b7355',
+        '--shadow-color': '#2a1a0f',
+        '--text-color': '#f5f5dc',
+        '--accent-color': '#daa520',
+        '--secondary-bg': 'rgba(60, 36, 21, 0.9)'
+      },
+      sand: {
+        '--main-bg': '#f4e4bc',
+        '--gradient-bg': 'linear-gradient(135deg, #f4e4bc, #d9c2a6)',
+        '--border-color': '#6b4e31',
+        '--shadow-color': '#5a3f27',
+        '--text-color': '#333333',
+        '--accent-color': '#e6b800',
+        '--secondary-bg': 'rgba(244, 228, 188, 0.8)'
+      }
+    };
+
+    function changeTheme(themeName) {
+      const theme = themes[themeName];
+      for (const [key, value] of Object.entries(theme)) {
+        document.documentElement.style.setProperty(key, value);
+      }
+      localStorage.setItem('selectedTheme', themeName);
+      showNotification(`Tema alterado para ${themeName.charAt(0).toUpperCase() + themeName.slice(1)}`, 'success');
     }
 
-    // Mural de visitantes
-    const muralForm = document.getElementById("mural-form");
-    const muralMensagens = document.getElementById("mural-mensagens");
-    let mensagens = carregarLocalStorage("mural");
-
-    function renderizarMural() {
-      muralMensagens.innerHTML = "";
-      mensagens.forEach((m) => {
-        const div = document.createElement("div");
-        div.className = "p-4 rounded-lg border-muted";
-        div.innerHTML = `<strong>${m.nome}</strong>: ${m.texto}`;
-        muralMensagens.appendChild(div);
-      });
+    function toggleSection(sectionId, button) {
+      const section = document.getElementById(sectionId);
+      section.classList.toggle('hidden');
+      
+      if (section.classList.contains('hidden')) {
+        button.textContent = button.textContent.replace('Ocultar', 'Mostrar');
+      } else {
+        button.textContent = button.textContent.replace('Mostrar', 'Ocultar');
+      }
     }
-    muralForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nome = document.getElementById("nome-visitante").value;
-      const texto = document.getElementById("mensagem-visitante").value;
-      mensagens.push({ nome, texto });
-      salvarLocalStorage("mural", mensagens);
-      renderizarMural();
-      muralForm.reset();
-    });
-    renderizarMural();
 
-    // Inscrição
-    const inscricaoForm = document.getElementById("inscricao-form");
-    const listaInscritos = document.getElementById("lista-inscritos");
-    let inscritos = carregarLocalStorage("inscritos");
-
-    function renderizarInscritos() {
-      listaInscritos.innerHTML = "";
-      inscritos.forEach((i) => {
-        const div = document.createElement("div");
-        div.className = "p-2 rounded-lg border-muted";
-        div.textContent = `${i.nome} - ${i.classe}`;
-        listaInscritos.appendChild(div);
-      });
-    }
-    inscricaoForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nome = document.getElementById("nome-jogador").value;
-      const classe = document.getElementById("classe-jogador").value;
-      inscritos.push({ nome, classe });
-      salvarLocalStorage("inscritos", inscritos);
-      renderizarInscritos();
-      inscricaoForm.reset();
-    });
-    renderizarInscritos();
-
-    // Mostrar/Ocultar chaveamento
-    const toggleChaveamento = document.getElementById("toggle-chaveamento");
-    const chaveamentoSection = document.getElementById("chaveamento");
-    toggleChaveamento.addEventListener("click", () => {
-      chaveamentoSection.classList.toggle("hidden");
-      toggleChaveamento.textContent = chaveamentoSection.classList.contains("hidden")
-        ? "Mostrar Chaveamento"
-        : "Esconder Chaveamento";
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('selectedTheme') || 'forest';
+      changeTheme(savedTheme);
+      
+      setTimeout(() => {
+        showNotification('Bem-vindo à Arena de Vorgran!', 'success');
+      }, 1000);
     });
   </script>
 </body>
